@@ -1,17 +1,16 @@
-import HttpException from '../../utils/Exceptions/http.exceptions.js';
-import { generateRefreshToken, generateToken } from '../token.js';
-import { successResponse } from '../../utils/Helpers/response.js';
-import { createRefreshToken } from '../token/token.service.js';
 import { sendEmailActivation } from '../../../Config/nodemailer.config.js';
 import RecruterAuthModel from './recruterAuth.model.js';
-
+import HttpException from '../../Exceptions/http.exceptions.js';
+import { generateRefreshToken, generateToken } from '../../Helpers/token.js';
+import { successResponse } from '../../Helpers/response.js';
+import { createRefreshToken } from '../../token/token.service.js';
 
 class RecruterAuthController {
   #recruterAuthModel = new RecruterAuthModel();
 
   // User Register
   register = async (req, res, next) => {
-    sendEmailActivation(req.user, 'customers')
+    sendEmailActivation(req.user, 'recruters')
       .then((response) => {
         successResponse(res, 200, 'Check your email for activation email!', {});
       })

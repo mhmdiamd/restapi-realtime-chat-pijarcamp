@@ -7,15 +7,15 @@ class WorkerAuthModel {
   #authRepository = dbRepo;
 
   // Auth Register
-  register = async ({ name, email, password, store_name, phone }) => {
-    const query = `INSERT INTO sellers(id, name, email, password, store_name, phone,  description, address, role, photo) VALUES('${randomUUID()}', '${name}', '${email}', '${password}','${store_name}', '${phone}', null, null,DEFAULT, DEFAULT)`;
-    const userRegister = await this.#authRepository.query(query);
-    return userRegister.rows;
+  register = async ({ name, email, password, phone }) => {
+    const query = `INSERT INTO workers(id, name, email, password, phone) VALUES('${randomUUID()}', '${name}', '${email}', '${password}', '${phone}')`;
+    const workerRegister = await this.#authRepository.query(query);
+    return workerRegister.rows;
   };
 
   // Login
   login = async (data) => {
-    const queryFindEmail = `SELECT * FROM sellers WHERE email='${data.email}'`;
+    const queryFindEmail = `SELECT * FROM workers WHERE email='${data.email}'`;
     const findEmail = await this.#authRepository.query(queryFindEmail);
 
     if (findEmail.rowCount == 0) {

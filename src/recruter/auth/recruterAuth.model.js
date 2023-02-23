@@ -7,10 +7,10 @@ class RecruterAuthModel {
   #DB = dbRepo;
 
   // Auth Register
-  register = async ({ name, email, password }) => {
-    const query = `INSERT INTO recruters VALUES('${randomUUID()}', '${name}', '${email}', '${password}', null, null, null,null, DEFAULT, DEFAULT)`;
-    const customerRegister = await this.#DB.query(query);
-    return customerRegister.rows;
+  register = async ({ name, email, password, company_name, position, phone }) => {
+    const query = `INSERT INTO recruters(id, name, email, company_name, password, position, phone) VALUES('${randomUUID()}', '${name}', '${email}', '${company_name}','${password}', '${position}', '${phone}')`;
+    const recruterRegister = await this.#DB.query(query);
+    return recruterRegister.rows;
   };
 
   // Login

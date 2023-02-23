@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import HttpException from '../../utils/Exceptions/http.exceptions.js';
+import HttpException from '../../Exceptions/http.exceptions.js';
 
 // Register Schema validation
 export async function recruterRegisterSchema(req, res, next) {
@@ -9,6 +9,9 @@ export async function recruterRegisterSchema(req, res, next) {
       .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
       .required(),
     password: Joi.string().min(3).required(),
+    position: Joi.string().required(),
+    phone: Joi.string().required().min(10),
+    company_name: Joi.string().required(),
   });
 
   await schema

@@ -23,8 +23,7 @@ class WorkerAuthRouter extends WorkerAuthController {
     this.router.post(`${this.path}/login`, this.login);
 
     // User Verification
-    this.router.get(`/workers/verification/:token`, workerEmailActivation
-    );
+    this.router.get(`/workers/verification/:token`, workerEmailActivation);
   }
 }
 

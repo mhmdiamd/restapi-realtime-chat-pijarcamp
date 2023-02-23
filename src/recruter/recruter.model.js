@@ -6,7 +6,7 @@ class RecruterModel {
 
   // Get All Recruter Service
   getAllRecruter = async () => {
-    let query = 'SELECT id, name, phone, email, address, gender, birth_date, role, photo FROM recruters';
+    let query = 'SELECT * FROM recruters';
     const recruters = await this.#DB.query(query);
 
     // Error if recruters id not found!
@@ -19,14 +19,16 @@ class RecruterModel {
 
   // Get single User
   getRecruterById = async (id) => {
-    const query = `SELECT id, name, email,phone, address, birth_date, gender, photo FROM recruters WHERE id = '${id}'`;
+    const query = `SELECT * FROM recruters WHERE id = '${id}'`;
 
     const recruter = await this.#DB.query(query);
     if (recruter.rowCount == 0) {
-      throw new HttpException(404, `Buyer with ID ${id} is not found!`);
+      throw new HttpException(404, `Recruter with ID ${id} is not found!`);
     }
 
-    return recruter.rows[0];
+    const { password, ...other } = recruter.rows[0]
+
+    return { ...other };
   };
 
   // Delete User
@@ -51,7 +53,7 @@ class RecruterModel {
     address=${address ? address : null}, 
     photo='${photo}'
     WHERE id = '${id}'`;
-    const updatedRecruter = await this.#DB.query(query);
+    await this.#DB.query(query);
 
     return await this.getRecruterById(id);
   };

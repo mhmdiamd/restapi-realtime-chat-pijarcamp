@@ -3,8 +3,7 @@ import bcrypt from 'bcryptjs';
 import WorkerAuthModel from '../worker/auth/workerAuth.model.js';
 import RecruterAuthModel from './../recruter/auth/recruterAuth.model.js';
 import HttpException from '../Exceptions/http.exceptions.js';
-
-
+import { successResponse } from './response.js';
 
 const workerAuthModel = new WorkerAuthModel();
 const recruterAuthModel = new RecruterAuthModel();
@@ -32,7 +31,7 @@ export const workerEmailActivation = async (req, res, next) => {
   });
 };
 
-export const buyerEmailActivation = async (req, res, next) => {
+export const recruterEmailActivation = async (req, res, next) => {
   const { token } = req.params;
   jwt.verify(token, process.env.EMAIL_ACTIVATION_TOKEN, async (err, user) => {
     if (err) {

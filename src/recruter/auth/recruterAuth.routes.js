@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { buyerEmailActivation } from '../../auth/emailActivation.js';
 import { recruterRegisterSchema } from './recruterAuth.validation.js';
-import RecruterAuthController from './recruterAuth.controller';
+import RecruterAuthController from './recruterAuth.controller.js';
+import { recruterEmailActivation } from '../../Helpers/emailActivation.js';
 
 
 class RecruterAuthRouter extends RecruterAuthController {
-  path = '/auth/routers';
+  path = '/auth/recruters';
   router = Router();
 
   constructor() {
@@ -20,7 +20,7 @@ class RecruterAuthRouter extends RecruterAuthController {
     this.router.post(`${this.path}/login`, this.login);
 
     // Buyer Email Activation
-    this.router.get(`/customers/verification/:token`, buyerEmailActivation);
+    this.router.get(`/recruters/verification/:token`, recruterEmailActivation);
   }
 }
 

@@ -8,6 +8,9 @@ export async function workerRegisterSchema(req, res, next) {
     email: Joi.string()
       .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
       .required(),
+    phone: Joi.string()
+      .min(10)
+      .required(),
     password: Joi.string().min(3).required(),
   });
 

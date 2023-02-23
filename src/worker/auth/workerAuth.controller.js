@@ -10,7 +10,7 @@ class WorkerAuthController {
 
   // User Register
   register = async (req, res, next) => {
-    sendEmailActivation(req.user, 'sellers')
+    sendEmailActivation(req.user, 'workers')
       .then((response) => {
         successResponse(res, 200, 'Check your email for activation email!', {});
       })
