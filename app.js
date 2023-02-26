@@ -31,7 +31,7 @@ class App {
   #initialiseMiddleware() {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
-    this.app.use(cors());
+    this.app.use(cors({origin: process.env.ORIGIN_DOMAIN, credentials: true}));
 
     this.app.use(helmet());
     this.app.use(morgan('dev'));

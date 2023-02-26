@@ -24,11 +24,11 @@ class WorkerAuthModel {
 
     const isValidPassword = bcrypt.compareSync(data.password, findEmail.rows[0].password);
     if (!isValidPassword) {
-      throw new HttpException(401, 'Email or Password is invalid!');
+      throw new HttpException(403, 'Email or Password is invalid!');
     }
 
-    const { id, name, role, store_name, photo } = findEmail.rows[0];
-    return { id, name, role, store_name, photo };
+    const { id, name, role, photo } = findEmail.rows[0];
+    return { id, name, role, photo };
   };
 }
 
