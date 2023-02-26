@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model workers {
+  id String   @db.VarChar(100) @unique
+  name String   @db.VarChar(100)
+  email String   @db.VarChar(100) @unique
+  password String   @db.VarChar(255)
+  job_desk String   @db.VarChar(100)
+  workplace String   @db.VarChar(100) 
+  description String
+  role String   @db.VarChar(100) @default("worker")
+  phone String   @db.VarChar(20) 
+  address String
+  photo String   @db.VarChar(100) @default("photodefault.jpg")
+  worker_category worker_category
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime?    @updatedAt
+  worker_skills worker_skills[]
+  portofolios portofolios[]
+  experiences experiences[]
+  messages messages[]
+}
+
+model recruters {
+  id String   @db.VarChar(100) @unique
+  name String   @db.VarChar(100)
+  email String   @db.VarChar(100) @unique
+  password String   @db.VarChar(255)
+  company_name String   @db.VarChar(100)
+  position String   @db.VarChar(100) 
+  description String
+  role String   @db.VarChar(100) @default("recruter")
+  phone String   @db.VarChar(20) 
+  address String
+  photo String   @db.VarChar(100) @default("photodefault.jpg")
+  background_photo String   @db.VarChar(100) 
+  instagram String   @db.VarChar(100)
+  linkedin String   @db.VarChar(100)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime?    @updatedAt
+  messages messages[]
+}
+
+
+model worker_skills {
+  id String   @db.VarChar(255) @unique
+  id_worker String   @db.VarChar(255) 
+  id_skill String   @db.VarChar(255) 
+  worker     workers @relation(fields: [id_worker], references: [id])
+  skill     skills   @relation(fields: [id_skill], references: [id])
+}
+
+enum worker_category {
+  freelance
+  fulltime
+}
+
+model skills {
+  id String   @db.VarChar(255) @unique
+  skill String   @db.VarChar(255) @unique
+   worker_skills worker_skills[]
+}
+
+model portofolios {
+  id String   @db.VarChar(100) @unique
+  id_worker String @db.VarChar(100)
+  worker     workers   @relation(fields: [id_worker], references: [id])
+  application_name String   @db.VarChar(100)
+  link_repositiory String   @db.VarChar(100)
+  type type_app
+  photo String   @db.VarChar(100) 
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime?    @updatedAt
+}
+
+model experiences {
+  id String   @db.VarChar(100) @unique
+  id_worker String @db.VarChar(100)
+  worker     workers   @relation(fields: [id_worker], references: [id])
+  company_name String   @db.VarChar(100)
+  company_photo String   @db.VarChar(100)
+  position String   @db.VarChar(100) 
+  career_start DateTime   @db.Date
+  career_end DateTime   @db.Date
+  description String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime?    @updatedAt
+}
+
+model messages {
+  id String   @db.VarChar(100) @unique
+  id_worker String @db.VarChar(100)
+  worker     workers   @relation(fields: [id_worker], references: [id])
+  id_recruter String @db.VarChar(100)
+  recruter     recruters   @relation(fields: [id_recruter], references: [id])
+  purpose String   @db.VarChar(255)
+  recruter_name String   @db.VarChar(100)
+  email String   @db.VarChar(100) 
+  phone String   @db.VarChar(20) 
+  read_status Int   @default(1)
+  description String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime?    @updatedAt
+}
+
+
+enum type_app {
+  mobile
+  web
+}
