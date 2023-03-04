@@ -1,16 +1,16 @@
-import CustomerModel from '../../customer/customer.model.js';
-import SellerModel from '../../seller/seller.model.js';
-import HttpException from '../../utils/Exceptions/http.exceptions.js';
-import { successResponse } from '../../utils/Helpers/response.js';
-import { regenerateToken } from './token.service.js';
 import jwt from 'jsonwebtoken';
+import WorkerModel from '../worker/worker.model.js';
+import RecruterModel from '../recruter/recruter.model.js';
+import HttpException from '../Exceptions/http.exceptions.js';
+import { successResponse } from '../Helpers/response.js';
+import { regenerateToken } from './token.service.js';
 
 export const getNewToken = async (req, res, next) => {
   const refreshToken = req.headers.authorization?.split(' ')[1];
 
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (error, payload) => {
     if (error) {
-      return next(new HttpException(401, 'Token is Expired!'));
+      return next(new HttpException(401, 'Refresh Token is Expired!'));
     }
     const { exp, iat, ...other } = payload;
     const { newAccessToken, newRefreshToken } = await regenerateToken(other, refreshToken);
@@ -33,15 +33,15 @@ export const logout = async (req, res, next) => {
 };
 
 export const getMyData = async (req, res, next) => {
-  const sellerModel = new SellerModel();
-  const customerModel = new CustomerModel();
+  const workerModel = new WorkerModel();
+  const recruterModel = new RecruterModel();
   const user = req.user;
   try {
     let data = '';  
-    if (user.role == 'seller') {
-      data = await sellerModel.getSellerById(user.id);
+    if (user.role == 'worker') {
+      data = await workerModel.getWorkerById(user.id);
     } else {
-      data = await customerModel.getCustomerById(user.id);
+      data = await recruterModel.getRecruterById(user.id);
     }
     successResponse(res, 200, 'Success get user', { ...data, role: user.role });
   } catch (err) {

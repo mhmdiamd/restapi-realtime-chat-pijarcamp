@@ -1,5 +1,7 @@
 import { google } from 'googleapis';
 import fs from 'fs';
+import dotenv from 'dotenv'
+dotenv.config({ path:'../.env' })
 
 const SCOPES = [
   'https://www.googleapis.com/auth/drive',
@@ -68,11 +70,11 @@ export async function createAndUpload(auth, photo) {
 
   const fileMetaData = {
     name: photo.filename,
-    parents: ['1ySvzVte_BhCmGBTQy5Q1kiyrlk-dUwT1'],
+    parents: [process.env.GOOGLE_DRIVE_PARENT_FOLDER],
   };
 
   const media = {
-    mimeType: 'image/png',
+    mimeType: photo.mimetype,
     body: fs.createReadStream(photo.path),
   };
 
@@ -84,6 +86,7 @@ export async function createAndUpload(auth, photo) {
 
   return response.data;
 }
+
 
 export async function deletePhoto(auth, id) {
   const driveService = google.drive({ version: 'v3', auth });
@@ -98,7 +101,7 @@ export async function updatePhoto(auth, photo, idPhoto) {
   const driveService = google.drive({ version: 'v3', auth });
   return new Promise((resolve, reject) => {
     const media = {
-      mimeType: 'image/png',
+      mimeType: photo.mimetype,
       body: fs.createReadStream(photo.path),
     };
 

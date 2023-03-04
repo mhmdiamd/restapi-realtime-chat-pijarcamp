@@ -16,16 +16,16 @@ class WorkerRouter extends WorkerController {
   // Initialise Router
   initialiseRoute() {
     // Get all User Router
-    this.router.get(`${this.path}/`, this.getAllSeller);
+    this.router.get(`${this.path}/`, this.getAllWorker);
 
     // Get User by id Router
-    this.router.get(`${this.path}/:id`, this.getSellerById);
+    this.router.get(`${this.path}/:id`, this.getWorkerById);
 
     // Delete User Router
-    this.router.delete(`${this.path}/:id`, this.deleteSellerById);
+    this.router.delete(`${this.path}/:id`, this.deleteWorkerById);
 
     // Update User Router
-    this.router.put(`${this.path}/:id`, this.upload.single('photo'), this.updateSellerById);
+    this.router.put(`${this.path}/:id`, this.upload.single('photo'), this.updateWorkerById);
   }
 }
 

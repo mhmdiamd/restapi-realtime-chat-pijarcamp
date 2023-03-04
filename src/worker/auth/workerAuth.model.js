@@ -15,6 +15,7 @@ class WorkerAuthModel {
 
   // Login
   login = async (data) => {
+    console.log(data)
     const queryFindEmail = `SELECT * FROM workers WHERE email='${data.email}'`;
     const findEmail = await this.#authRepository.query(queryFindEmail);
 

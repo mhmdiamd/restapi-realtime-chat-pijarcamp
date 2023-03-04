@@ -1,6 +1,5 @@
 import { Router } from 'express';
-import { authCheck } from '../../utils/Middlewares/auth.middleware.js';
-import { isYourCredentials } from '../../utils/Middlewares/credentials.middleware.js';
+import { authCheck } from '../Middlewares/auth.middleware.js';
 import { getMyData, getNewToken, logout } from './token.controller.js';
 
 class TokenRouter {

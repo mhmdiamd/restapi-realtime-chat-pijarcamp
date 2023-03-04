@@ -29,6 +29,8 @@ class WorkerAuthController {
       res.cookie('access_token', accessToken, {
         httpOnly: true,
         maxAge: (1 / 2) * 60 * 60 * 1000,
+        sameSite: 'none',
+        secure: 'false',
       });
 
       res.status(200).json({

@@ -25,8 +25,5 @@ export async function regenerateToken(user, oldToken) {
   const newAccessToken = generateToken(user);
   const newRefreshToken = generateRefreshToken(user);
 
-  await dbRepo.query(`INSERT INTO refresh_tokens VALUES(DEFAULT, '${newRefreshToken}')`);
-  await dbRepo.query(`DELETE FROM refresh_tokens WHERE token='${oldToken}'`);
-
   return { newAccessToken, newRefreshToken };
 }

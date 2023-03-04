@@ -26,7 +26,7 @@ class App {
     this.#initialiseRouters(routers);
     this.#initialiseErrorHandling();
   }
-
+// hallo ilham ini dari kak zaki
   // Initialise Middleware
   #initialiseMiddleware() {
     this.app.use(express.json());
@@ -36,14 +36,8 @@ class App {
     this.app.use(helmet());
     this.app.use(morgan('dev'));
     this.app.use(xss());
-    this.app.use(cookieParser());
-    // Static file for pruduct images
-    this.app.use(process.env.PRODUCT_UPLOAD_DIR, express.static(path.join(this.dirname, 'Public/Images/Products')));
-    this.app.use(process.env.CATEGORY_UPLOAD_DIR, express.static(path.join(this.dirname, 'Public/Images/Categories')));
-    this.app.use(process.env.SELLER_PROFILE_UPLOAD_DIR, express.static(path.join(this.dirname, 'Public/Images/Profiles/Sellers')));
-    this.app.use(process.env.CUSTOMER_PROFILE_UPLOAD_DIR, express.static(path.join(this.dirname, 'Public/Images/Profiles/Customers')));
+    this.app.use(cookieParser());    
   }
-  z;
   #initialiseErrorHandling() {
     this.app.use(errorMiddleware);
     this.app.use((req, res, next) => {
@@ -79,7 +73,7 @@ class App {
     //   });
     // }
     this.app.listen(this.port, () => {
-      console.log(`Server Running with worker id ${process.pid} on port ${this.port} with`);
+      console.log(`Server Running with worker id ${process.pid} on port ${this.port}`);
     });
   }
 }

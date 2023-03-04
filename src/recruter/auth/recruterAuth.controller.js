@@ -33,7 +33,6 @@ class RecruterAuthController {
         secure: 'false',
       });
 
-      await createRefreshToken(refreshToken);
       res.status(200).json({
         status: 'success',
         statusCode: 200,

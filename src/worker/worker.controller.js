@@ -1,67 +1,92 @@
-import { clearRedisCache, setOrGetCache } from '../../Config/redis.config.js';
+// import { clearRedisCache, setOrGetCache } from '../../Config/redis.config.js';
 import HttpException from '../Exceptions/http.exceptions.js';
 import { successResponse } from '../Helpers/response.js';
 import WorkerModel from './worker.model.js';
-import SellerModel from './worker.model.js';
+import { updatePhoto, auth, createAndUpload } from '../../Config/googleDrive.config.js';
 
 
 class WorkerController {
   #workerModel = new WorkerModel();
-  ENDPOINT = '/workers';
+  // ENDPOINT = '/workers';
 
-  // Get all Seller
-  getAllSeller = async (req, res, next) => {
+  // Get all Worker
+  getAllWorker = async (req, res, next) => {
+    const query = req.query
     try {
-      const sellers = await this.#workerModel.getAllSeller();
-
-      successResponse(res, 200, 'Get all Sellers success!', sellers);
+      const workers = await this.#workerModel.getAllWorker(query);
+      const {data, ...other} = workers
+      res.status(200).json({
+          status: "success",
+          statusCode: 200,
+          message: "Success get all worker!",
+          data,
+          ...other
+      })
+      successResponse(res, 200, 'Get all Worker success!', ...workers);
     } catch (err) {
       next(new HttpException(err.status, err.message));
     }
   };
 
-  // Get Seller By Id
-  getSellerById = async (req, res, next) => {
+  // Get Worker By Id
+  getWorkerById = async (req, res, next) => {
     const { id } = req.params;
     try {
-      // const seller = await setOrGetCache(`${this.ENDPOINT}/${id}`, async () => {
-      //   return await this.#workerModel.getSellerById(id);
+      // const worker = await setOrGetCache(`${this.ENDPOINT}/${id}`, async () => {
+      //   return await this.#workerModel.getWorkerById(id);
       // });
 
-      const seller = await this.#workerModel.getSellerById(id);
-      successResponse(res, 200, `Get seller with ID ${id} success!`, seller);
+      const worker = await this.#workerModel.getWorkerById(id);
+      successResponse(res, 200, `Get Worker with ID ${id} success!`, worker);
     } catch (err) {
       console.log(err);
       next(new HttpException(err.status, err.message));
     }
   };
 
-  // Delete Seller
-  deleteSellerById = async (req, res, next) => {
+  // Delete Worker
+  deleteWorkerById = async (req, res, next) => {
     const { id } = req.params;
     try {
-      await this.#workerModel.deleteSellerById(id);
-      successResponse(res, 200, 'Seller success deleted!', { mesage: 'Seller deleted!' });
-      await clearRedisCache(`${this.ENDPOINT}/${id}`);
+      await this.#workerModel.deleteWorkerById(id);
+      successResponse(res, 200, 'Worker success deleted!', { mesage: 'Worker deleted!' });
+      // await clearRedisCache(`${this.ENDPOINT}/${id}`);
     } catch (err) {
       next(new HttpException(err.status, err.message));
     }
   };
 
-  // Update Seller By Id
-  updateSellerById = async (req, res, next) => {
+  // Update Worker By Id
+  updateWorkerById = async (req, res, next) => {
     const { id } = req.params;
-    const photo = req.file;
     try {
       // Create file name
-      const photoUrl = `${process.env.HOST}${process.env.SELLER_PROFILE_UPLOAD_DIR}${photo.filename}`;
-      const data = { ...req.body, photo: photoUrl };
+      if(req.file) {
+        // Get Worker by id
+        const worker = await this.#workerModel.getWorkerById(id)
+
+        // Check if user have a photo before
+        if(worker.photo == 'photodefault.jpg') {
+          const uploadToDrive = await createAndUpload(auth, req.file)
+          // Generate photo Url
+          const photoLink = `https://drive.google.com/uc?id=${uploadToDrive.id}`
+          await this.#workerModel.updateWorkerById(id, {...req.body, photo : photoLink});
+        }else {
+          // Get Id photo
+          const getPhotoId = worker.photo.split('=')[1]
+          // Update Photo in drive
+          await updatePhoto(auth, req.file, getPhotoId)
+          await this.#workerModel.updateWorkerById(id, {...req.body});
+        }
+      }else {
+         await this.#workerModel.updateWorkerById(id, req.body);
+      }
+
       // await clearRedisCache(`${this.ENDPOINT}/${id}`);
-      const seller = await this.#workerModel.updateSellerById(id, data);
       // await setOrGetCache(`${this.ENDPOINT}/${id}`, async () => {
-      //   return seller;
+      //   return worker;
       // });
-      successResponse(res, 200, `Success updated seller with id ${id}`, { message: `Seller Updated!` });
+      successResponse(res, 200, `Success updated worker with id ${id}`, { message: `worker Updated!` });
     } catch (err) {
       next(new HttpException(err.status, err.message));
     }

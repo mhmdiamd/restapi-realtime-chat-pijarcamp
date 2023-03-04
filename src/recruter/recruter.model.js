@@ -1,32 +1,92 @@
-import { dbRepo } from '../../Config/db.config.js';
 import HttpException from '../Exceptions/http.exceptions.js';
+import { PrismaClient } from '@prisma/client';
+import { dbRepo } from './../../Config/db.config.js';
 
 class RecruterModel {
-  #DB = dbRepo;
+  #DB = dbRepo
+  prisma = new PrismaClient()
 
-  // Get All Recruter Service
-  getAllRecruter = async () => {
-    let query = 'SELECT * FROM recruters';
-    const recruters = await this.#DB.query(query);
+  // Count Product
+  #coutRecruter = async (search) => {
+    return await this.prisma.recruters
+      .aggregate({
+        _count: {
+          id: true,
+        },
+        where: {
+          name: {
+            contains: search || '',
+          },
+        },
+      })
+      .then((res) => res._count.id);
+  };
 
-    // Error if recruters id not found!
-    if (recruters.rowCount == 0) {
-      throw new HttpException(404, `recruters not found!`);
+  exclude(recruters, key) {
+    for (let recruter of recruters) {
+      delete recruter[key]
+    }
+    return recruters
+  }
+
+  // Get All recruters Service
+  getAllRecruter = async ({ search, sortBy, sort, page, limit }) => {
+    page = Number(page) || 1;
+    limit = Number(limit) || 10;
+    const offset = (page - 1) * limit;
+    let recruters = await this.prisma.recruters.findMany({
+      where: {
+        name: {
+          // Filtering data with search
+          contains: search,
+          mode: 'insensitive',
+        },
+      },
+      orderBy: [
+        // Ordering and sorting data recruters
+        {
+          [sortBy || 'id']: sort || 'desc',
+        },
+      ],
+      take: Number(limit), // Limit
+      skip: offset, // Offser
+    });
+
+    // Error Handling when product is not found!
+    if (recruters.length == 0) {
+      throw new HttpException(404, 'recruter not found!');
     }
 
-    return recruters.rows;
+    recruters = this.exclude(recruters, 'password')
+
+    let totalData;
+
+    if (search) {
+      totalData = await this.#coutRecruter(search);
+    } else {
+      totalData = await this.#coutRecruter();
+    }
+
+    // Get Total Page
+    const totalPage = Math.ceil(totalData / limit);
+    return {
+      data: recruters,
+      currentPage: page,
+      totalPage,
+      count: totalData,
+      limit,
+    };
   };
 
   // Get single User
   getRecruterById = async (id) => {
-    const query = `SELECT * FROM recruters WHERE id = '${id}'`;
+    let recruter = await this.prisma.recruters.findUnique({
+      where: {
+        id: id
+      }
+    });
 
-    const recruter = await this.#DB.query(query);
-    if (recruter.rowCount == 0) {
-      throw new HttpException(404, `Recruter with ID ${id} is not found!`);
-    }
-
-    const { password, ...other } = recruter.rows[0]
+    const { password, ...other } = recruter
 
     return { ...other };
   };
@@ -42,20 +102,14 @@ class RecruterModel {
 
   // Update Recruter by Id
   updateRecruterById = async (id, data) => {
-    await this.getRecruterById(id);
+    const recruter = await this.prisma.recruters.update({
+      data: data,
+      where : {
+        id: id
+      }
+    })
 
-    const { name, gender, phone, birth_date, address, photo } = data;
-    const query = `UPDATE recruters SET 
-    name='${name}', 
-    phone=${phone ? `'${phone}'` : null}, 
-    birth_date=${`${birth_date}` || null}, 
-    gender=${`'${gender}'` || null}, 
-    address=${address ? address : null}, 
-    photo='${photo}'
-    WHERE id = '${id}'`;
-    await this.#DB.query(query);
-
-    return await this.getRecruterById(id);
+    return recruter
   };
 }
 
