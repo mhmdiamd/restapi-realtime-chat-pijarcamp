@@ -10,8 +10,9 @@ import process from 'process';
 import path from 'path';
 import multer from 'multer';
 import { fileURLToPath } from 'url';
-import { config } from 'dotenv';
 import errorMiddleware from './src/Middlewares/error.middleware.js'
+import mongoose from 'mongoose';
+import dotenv from 'dotenv'
 
 class App {
   filename = fileURLToPath(import.meta.url);
@@ -19,20 +20,21 @@ class App {
   upload = multer();
 
   constructor(routers, port) {
+    dotenv.config()
     this.app = express();
     this.port = port;
 
+    this.#initialiseDatabaseConnection()
     this.#initialiseMiddleware();
     this.#initialiseRouters(routers);
     this.#initialiseErrorHandling();
   }
-// hallo ilham ini dari kak zaki
+
   // Initialise Middleware
   #initialiseMiddleware() {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cors({origin: process.env.ORIGIN_DOMAIN, credentials: true}));
-
     this.app.use(helmet());
     this.app.use(morgan('dev'));
     this.app.use(xss());
@@ -54,24 +56,25 @@ class App {
     });
   }
 
+  async #initialiseDatabaseConnection(){
+    const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH } = process.env;
+
+    mongoose.set('strictQuery', false); 
+    try{
+      const connect = await mongoose.connect(
+        `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}${MONGO_PATH}`
+      );
+      if (connect) {
+          console.log('Connected to DB');
+      }
+    }catch(err){
+      console.log(err)
+    }
+  
+  }
+
   // Lister Server
   listen() {
-    // if (cluster.isPrimary) {
-    //   for (let i = 0; i < os.cpus().length; i++) {
-    //     cluster.fork();
-    //   }
-
-    //   cluster.addListener('exit', (worker, code, signal) => {
-    //     console.log(`Worker with id ${worker.id} is exit`);
-    //     cluster.fork();
-    //   });
-    // }
-
-    // if (cluster.isWorker) {
-    //   this.app.listen(this.port, () => {
-    //     console.log(`Server Running with worker id ${process.pid} on port ${this.port} with`);
-    //   });
-    // }
     this.app.listen(this.port, () => {
       console.log(`Server Running with worker id ${process.pid} on port ${this.port}`);
     });

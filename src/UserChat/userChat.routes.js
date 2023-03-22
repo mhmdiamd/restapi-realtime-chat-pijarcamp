@@ -1,11 +1,10 @@
 import { Router } from 'express';
 import { multerStorage, useStorage } from '../../Config/multer.config.js';
 import { authCheck } from '../Middlewares/auth.middleware.js';
-import MessageController from './message.controller.js';
+import UserChatController from './userChat.controller.js'
 
-
-class MessageRouter extends MessageController {
-  path = '/messages'
+class UserChatRouter extends UserChatController {
+  path = '/user-chats'
   router = Router();
   upload = multerStorage(useStorage('Profiles/Sellers'));
 
@@ -16,9 +15,9 @@ class MessageRouter extends MessageController {
 
   // Initialise Router
   initialiseRoute() {
-    this.router.put(`${this.path}/:id`, authCheck, this.sendMessage)
-    this.router.get(`${this.path}/chat/:id`, authCheck, this.getMessageByChatId)
+    this.router.post(`${this.path}`, authCheck, this.createUserChat)
+    this.router.get(`${this.path}`, authCheck, this.getUserChat)
   }
 }
 
-export default MessageRouter;
+export default UserChatRouter;

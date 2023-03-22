@@ -1,8 +1,7 @@
 import jwt from 'jsonwebtoken';
-import WorkerModel from '../worker/worker.model.js';
-import RecruterModel from '../recruter/recruter.model.js';
 import HttpException from '../Exceptions/http.exceptions.js';
 import { successResponse } from '../Helpers/response.js';
+import userModel from '../user/user.model.js';
 import { regenerateToken } from './token.service.js';
 
 export const getNewToken = async (req, res, next) => {
@@ -33,17 +32,12 @@ export const logout = async (req, res, next) => {
 };
 
 export const getMyData = async (req, res, next) => {
-  const workerModel = new WorkerModel();
-  const recruterModel = new RecruterModel();
   const user = req.user;
   try {
     let data = '';  
-    if (user.role == 'worker') {
-      data = await workerModel.getWorkerById(user.id);
-    } else {
-      data = await recruterModel.getRecruterById(user.id);
-    }
-    successResponse(res, 200, 'Success get user', { ...data, role: user.role });
+    data = await userModel.findOne({_id: user._id});
+    const {password, ...other} = data._doc
+    successResponse(res, 200, 'Success get user', other);
   } catch (err) {
     console.log(err);
     next(new HttpException(err.status, err.message));
