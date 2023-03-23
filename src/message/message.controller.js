@@ -35,6 +35,23 @@ class MessageController {
     }
   }
 
+
+   /**
+   * Send Message Group
+   */
+
+   sendMessageGroup = async (req, res, next) => {
+    const { message } = req.body
+    const { id } = req.params
+    const newMessage = { ...message, senderId: req.user._id }
+    try {
+      const message = await this.messageService.sendMessage(id, newMessage)
+      return successResponse(res, 200, "Message Success to send!", message)
+    } catch (err) {
+      return next(new HttpException(err.status, err.message))
+    }
+  }
+
 }
 
 export default MessageController;

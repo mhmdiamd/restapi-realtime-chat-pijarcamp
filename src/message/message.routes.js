@@ -17,7 +17,8 @@ class MessageRouter extends MessageController {
   // Initialise Router
   initialiseRoute() {
     this.router.put(`${this.path}/:id`, authCheck, this.sendMessage)
-    this.router.get(`${this.path}/chat/:id`, authCheck, this.getMessageByChatId)
+    this.router.put(`${this.path}/group/:id`, authCheck, this.sendMessageGroup)
+    this.router.get(`${this.path}/chat/:id`, this.getMessageByChatId)
   }
 }
 

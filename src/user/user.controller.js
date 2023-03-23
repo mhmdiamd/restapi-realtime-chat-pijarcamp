@@ -5,6 +5,16 @@ import UserService from "./user.service.js"
 class UserController {
   userService = new UserService()
 
+  getAllUser = async (req, res, next) => {
+    const query = req.query
+    try{
+      const users = await this.userService.getAllUser(query)
+      return successResponse(res, 200, "Success get user!", users)
+    }catch(err) {
+      return next(new HttpException(err.status, err.message))
+    }
+  }
+
   updateUser = async (req, res, next) => {
 
   }

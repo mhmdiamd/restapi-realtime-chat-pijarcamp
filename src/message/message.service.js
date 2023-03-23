@@ -1,4 +1,5 @@
 import HttpException from '../Exceptions/http.exceptions.js';
+import GroupModel from '../group/group.model.js';
 import userChatModel from '../UserChat/UserChat.model.js';
 import messageModel from './message.model.js';
 
@@ -45,6 +46,36 @@ class MessageService {
       throw new HttpException(err.status, err.message)
     }
   }
+
+   /**
+   * Send Message Group
+   */
+
+   sendMessageGroup = async (id, message) => {
+    try {
+      const res = await messageModel.findOneAndUpdate(
+        { chatId: id },
+        { $push: { messages: message } },
+        { new: true }
+      )
+
+      if(res) {
+        await GroupModel.findOneAndUpdate(
+          {_id: id},
+          {lastMessage : {
+            text: message.text
+          }},
+          {new: true}
+        )
+      }
+      
+      return res
+    } catch (err) {
+      throw new HttpException(err.status, err.message)
+    }
+  }
+
+
 }
 
 export default MessageService;
