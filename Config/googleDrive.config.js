@@ -1,50 +1,15 @@
 import { google } from 'googleapis';
 import fs from 'fs';
 import dotenv from 'dotenv'
-dotenv.config({ path:'../.env' })
 
+dotenv.config()
 const SCOPES = [
   'https://www.googleapis.com/auth/drive',
-  'https://www.googleapis.com/auth/drive.appdata',
-  'https://www.googleapis.com/auth/drive.file',
-  ' https://www.googleapis.com/auth/drive.scripts',
-  'https://www.googleapis.com/auth/drive.metadata',
+  // 'https://www.googleapis.com/auth/drive.appdata',
+  // 'https://www.googleapis.com/auth/drive.file',
+  // ' https://www.googleapis.com/auth/drive.scripts',
+  // 'https://www.googleapis.com/auth/drive.metadata',
 ];
-
-// export async function unlockFolder() {
-//   try {
-//     const zip = new AdmZip('./credentials.zip');
-//     console.log('tes');
-//     zip.getEntries().forEach((entry) => {
-//       entry.password = 'ilhamgoogledrive';
-//     });
-//     zip.extractAllTo('/', true);
-//     console.log('The ZIP file has been extracted successfully.');
-//     return true;
-//   } catch (err) {
-//     console.error(err);
-//     return false;
-//   }
-// }
-
-// fs.stat(
-//   './credentials.json',
-//   (err,
-//   (stats) => {
-//     if (err.code === 'ENOENT') {
-//       console.error('The file does not exist.');
-//       if (unlockFolder()) {
-//         return {
-//           keyFile: './credentials.json',
-//           scopes: SCOPES,
-//         };
-//       }
-//     } else {
-//       console.error(err);
-//       return err;
-//     }
-//   })
-// );
 
 export const auth = new google.auth.GoogleAuth({
   credentials: {
@@ -57,7 +22,7 @@ export const auth = new google.auth.GoogleAuth({
     "auth_uri": process.env.GOOGLE_DRIVE_AUTH_URI,
     "token_uri": process.env.GOOGLE_DRIVE_TOKEN_URI,
     "auth_provider_x509_cert_url": process.env.GOOGLE_DRIVE_AUTH_PROVIDER,
-    "client_x509_cert_url": process.env.GOOGLE_DRIVE_CLIENT_URL,
+    "client_x509_cert_url": process.env.GOOGLE_DRIVE_CLIENT_URL
   },
   scopes: SCOPES,
 });
@@ -70,7 +35,7 @@ export async function createAndUpload(auth, photo) {
 
   const fileMetaData = {
     name: photo.filename,
-    parents: [process.env.GOOGLE_DRIVE_PARENT_FOLDER],
+    parents: ["1tXHw_tLDCHBPgUitRIqF70raXRrrptFL"],
   };
 
   const media = {

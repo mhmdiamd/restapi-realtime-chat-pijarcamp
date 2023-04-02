@@ -63,6 +63,24 @@ class UserService {
       throw new HttpException(err.status, err.message)
     }
   }
+
+  /**
+   * Update User
+   */
+
+  async udpateUser(id, data){
+    try{  
+      const resUpdate = await this.#userModel.findOneAndUpdate(
+        {_id: id},
+        data,
+        {new: true}
+      )
+
+      return resUpdate
+    }catch(err){
+      throw new HttpException(err.status, err.message)
+    }
+  }
 }
 
 export default UserService;

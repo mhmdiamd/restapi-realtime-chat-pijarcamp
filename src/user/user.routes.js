@@ -16,7 +16,7 @@ class UserRouter extends UserController {
   // Initialise Router
   initialiseRoute() {
     this.router.put(`${this.path}/add-contact`, authCheck, this.addContact)
-    this.router.put(`${this.path}/edit/:id`, authCheck, this.updateUser)
+    this.router.put(`${this.path}/edit/:id`, authCheck, this.upload.single('photo'), this.updateUser)
     this.router.get(`${this.path}`, authCheck, this.getAllUser)
   }
 }

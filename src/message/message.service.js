@@ -10,11 +10,11 @@ class MessageService {
    */
 
   getMessageByChatId = async (id) => {
-    try{
-      const messages = await messageModel.findOne({chatId: id})
-      if(!messages) throw new HttpException(404, `Message not found!`)
+    try {
+      const messages = await messageModel.findOne({ chatId: id })
+      if (!messages) throw new HttpException(404, `Message not found!`)
       return messages
-    }catch(err){
+    } catch (err) {
       throw new HttpException(err.status, err.message)
     }
   }
@@ -31,27 +31,29 @@ class MessageService {
         { new: true }
       )
 
-      if(res) {
+      if (res) {
         await userChatModel.findOneAndUpdate(
-          {_id: id},
-          {lastMessage : {
-            text: message.text
-          }},
-          {new: true}
+          { _id: id },
+          {
+            lastMessage: {
+              text: message.text
+            }
+          },
+          { new: true }
         )
       }
-      
+
       return res
     } catch (err) {
       throw new HttpException(err.status, err.message)
     }
   }
 
-   /**
-   * Send Message Group
-   */
+  /**
+  * Send Message Group
+  */
 
-   sendMessageGroup = async (id, message) => {
+  sendMessageGroup = async (id, message) => {
     try {
       const res = await messageModel.findOneAndUpdate(
         { chatId: id },
@@ -59,21 +61,70 @@ class MessageService {
         { new: true }
       )
 
-      if(res) {
+      if (res) {
         await GroupModel.findOneAndUpdate(
-          {_id: id},
-          {lastMessage : {
-            text: message.text
-          }},
-          {new: true}
+          { _id: id },
+          {
+            lastMessage: {
+              text: message.text
+            }
+          },
+          { new: true }
         )
       }
-      
+
       return res
     } catch (err) {
       throw new HttpException(err.status, err.message)
     }
   }
+
+  /**
+   * Delete Message
+   */
+
+  deleteMessageById = async (idMessage, idRoom) => {
+    try {
+      const findRoom = await messageModel.updateOne(
+        {
+          chatId: idRoom,
+          messages: {
+            $elemMatch: { _id: idMessage }
+          }
+        },
+        { $set: { "messages.$.is_deleted": true } },
+        { new: true }
+      )
+
+      return findRoom
+    } catch (err) {
+      throw new HttpException(err.status, err.message)
+    }
+  }
+
+  /**
+   * Update Message
+   */
+
+  updateMessageById = async ({idMessage, idRoom, text}) => {
+    try {
+      const editMessage = await messageModel.updateOne(
+        {
+          chatId: idRoom,
+          messages: {
+            $elemMatch: { _id: idMessage }
+          }
+        },
+        { $set: { "messages.$.text": text } },
+        { new: true }
+      )
+
+      return editMessage
+    } catch (err) {
+      throw new HttpException(err.status, err.message)
+    }
+  }
+
 
 
 }

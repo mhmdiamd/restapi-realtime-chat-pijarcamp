@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 export function generateToken(data) {
   console.log(data)
   return jwt.sign(data, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: '30m',
+    expiresIn: '1h',
   });
 }
 
