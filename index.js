@@ -1,5 +1,5 @@
 import App from './app.js';
-import UserChatRouter from './src/UserChat/UserChat.routes.js';
+import UserChatRouter from './src/userChat/UserChat.routes.js';
 import GroupRouter from './src/group/group.routes.js';
 import MessageRouter from './src/message/message.routes.js';
 import TokenRouter from './src/token/token.routes.js';
