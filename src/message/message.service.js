@@ -1,5 +1,5 @@
 import HttpException from '../Exceptions/http.exceptions.js';
-// import userChatModel from '../userChat/userChat.model.js';
+import UserChatModel from '../userChat/userChat.model.js'
 import GroupModel from '../group/group.model.js';
 import messageModel from './message.model.js';
 
