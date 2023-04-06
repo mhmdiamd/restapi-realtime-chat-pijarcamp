@@ -1,6 +1,6 @@
 import HttpException from '../Exceptions/http.exceptions.js';
+import UserChatModel from '../userChat/userChat.model.js';
 import userModel from './user.model.js';
-import { randomUUID } from 'crypto'
 
 class UserService {
   #userModel = userModel

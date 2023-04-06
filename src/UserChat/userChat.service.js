@@ -1,18 +1,16 @@
 import HttpException from '../Exceptions/http.exceptions.js';
 import MessageModel from '../message/message.model.js';
-import UserChatModel from './userChat.model.js';
-
+import UserChatModel from './userChat.model.js'
 
 class UserChatService {
-  userChatModel = UserChatModel
 
-  /**
+  /**UserChatModel
    * Get User chat  
    */
 
   getUserChat = async (userId) => {
     try {
-      const userChats = await this.userChatModel.find({
+      const userChats = await this.UserChatModel.find({
         members: {
           $elemMatch: { _id: userId }
         }

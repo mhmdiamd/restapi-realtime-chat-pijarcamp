@@ -1,6 +1,5 @@
 import HttpException from '../Exceptions/http.exceptions.js';
 import GroupModel from '../group/group.model.js';
-import UserChatModel from '../UserChat/UserChat.model.js';
 import messageModel from './message.model.js';
 
 class MessageService {
