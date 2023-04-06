@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest",
     "start:dev": "nodemon index.js",
-    "lint": "eslint --fix --ext .js,.jsx .",
+    "lint": "eslint --fix --ext .js,.jsx ."
   },
   "keywords": [],
   "author": "",
