@@ -1,5 +1,4 @@
 import HttpException from '../Exceptions/http.exceptions.js';
-import UserChatModel from '../userChat/userChat.model.js';
 import userModel from './user.model.js';
 
 class UserService {
