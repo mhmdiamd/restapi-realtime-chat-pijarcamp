@@ -1,5 +1,5 @@
 import HttpException from '../Exceptions/http.exceptions.js';
-import userChatModel from '../userChat/userChat.model.js';
+// import userChatModel from '../userChat/userChat.model.js';
 import GroupModel from '../group/group.model.js';
 import messageModel from './message.model.js';
 
@@ -31,17 +31,17 @@ class MessageService {
         { new: true }
       )
 
-      if (res) {
-        await userChatModel.findOneAndUpdate(
-          { _id: id },
-          {
-            lastMessage: {
-              text: message.text
-            }
-          },
-          { new: true }
-        )
-      }
+      // if (res) {
+      //   await userChatModel.findOneAndUpdate(
+      //     { _id: id },
+      //     {
+      //       lastMessage: {
+      //         text: message.text
+      //       }
+      //     },
+      //     { new: true }
+      //   )
+      // }
 
       return res
     } catch (err) {
