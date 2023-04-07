@@ -10,7 +10,7 @@ class UserChatService {
 
   getUserChat = async (userId) => {
     try {
-      const userChats = await this.UserChatModel.find({
+      const userChats = await UserChatModel.find({
         members: {
           $elemMatch: { _id: userId }
         }
