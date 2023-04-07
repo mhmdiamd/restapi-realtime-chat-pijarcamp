@@ -31,17 +31,17 @@ class MessageService {
         { new: true }
       )
 
-      // if (res) {
-      //   await userChatModel.findOneAndUpdate(
-      //     { _id: id },
-      //     {
-      //       lastMessage: {
-      //         text: message.text
-      //       }
-      //     },
-      //     { new: true }
-      //   )
-      // }
+      if (res) {
+        await userChatModel.findOneAndUpdate(
+          { _id: id },
+          {
+            lastMessage: {
+              text: message.text
+            }
+          },
+          { new: true }
+        )
+      }
 
       return res
     } catch (err) {
