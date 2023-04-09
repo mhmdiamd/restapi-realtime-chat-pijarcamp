@@ -184,7 +184,7 @@ Contributions are what make the open source community such an amazing place to b
 
 :rocket: [`Socket Dialogue`](https://github.com/mhmdiamd/socket-realtime-chat-pijarcamp)
 
-:rocket: [`Frontend Dialogue`](https://github.com/mhmdiamd/ui-dialogue-app)
+:rocket: [`Frontend Dialogue`](https://github.com/mhmdiamd/ui-dialogue-pijarcamp)
 
 :rocket: [`Demo Dialogue`](https://iam-dialogue.vercel.app/)
 
