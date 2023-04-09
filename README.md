@@ -1,7 +1,7 @@
 <br />
 <p align="center">
 <div align="center">
-<img height="150" src="./documentation/logo.png" alt="Dialogue" border="0"/>
+<h1 align="center">Dialogue</h1>
 </div>
   <h3 align="center">Backend Dialogue</h3>
   <p align="center">
