@@ -27,7 +27,8 @@ class App {
     this.httpServer = createServer(this.app)
     this.io = new Server(this.httpServer, {
       cors: {
-        origin: process.env.ORIGIN_DOMAIN
+        origin: process.env.ORIGIN_DOMAIN,
+        methods: "GET, POST, DELETE, PUT"
       }
     })
     this.port = port;
