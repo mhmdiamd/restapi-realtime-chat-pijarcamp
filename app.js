@@ -59,7 +59,6 @@ class App {
       this.app.use('/api/v1', router.router);
     });
   }
-
   async #initialiseDatabaseConnection(){
     const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH } = process.env;
 
@@ -74,7 +73,6 @@ class App {
     }catch(err){
       console.log(err)
     }
-  
   }
 
   // Lister Server
