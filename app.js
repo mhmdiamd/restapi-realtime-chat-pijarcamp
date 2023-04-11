@@ -4,8 +4,6 @@ import cors from 'cors';
 import xss from 'xss-clean';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
-import cluster from 'cluster';
-import os from 'os';
 import process from 'process';
 import path from 'path';
 import multer from 'multer';
@@ -45,7 +43,6 @@ class App {
     this.io.on("connection", (socket) => {
 
       this.io.emit(`get-socket-id`, socket.id)
-    
       // Generate user Login!
       socket.on('user-login', (userLoginId) => {
         if (!this.activeUsers.some(activeUser => activeUser.userId == userLoginId)) {
@@ -136,7 +133,7 @@ class App {
         `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}${MONGO_PATH}`
       );
       if (connect) {
-          console.log('Connected to DB');
+        console.log('Connected to DB');
       }
     }catch(err){
       console.log(err)
