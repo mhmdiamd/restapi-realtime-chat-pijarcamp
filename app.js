@@ -13,6 +13,8 @@ import { fileURLToPath } from 'url';
 import errorMiddleware from './src/Middlewares/error.middleware.js'
 import mongoose from 'mongoose';
 import dotenv from 'dotenv'
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 
 class App {
   filename = fileURLToPath(import.meta.url);
@@ -22,12 +24,76 @@ class App {
   constructor(routers, port) {
     dotenv.config()
     this.app = express();
+    this.httpServer = createServer(this.app)
+    this.io = new Server(this.httpServer, {
+      cors: {
+        origin: process.env.ORIGIN_DOMAIN
+      }
+    })
     this.port = port;
+    this.activeUsers = []
 
+    this.#initialiseSocketIo()
     this.#initialiseDatabaseConnection()
     this.#initialiseMiddleware();
     this.#initialiseRouters(routers);
     this.#initialiseErrorHandling();
+  }
+
+  #initialiseSocketIo() {
+    this.io.on("connection", (socket) => {
+
+      this.io.emit(`get-socket-id`, socket.id)
+    
+      // Generate user Login!
+      socket.on('user-login', (userLoginId) => {
+        if (!this.activeUsers.some(activeUser => activeUser.userId == userLoginId)) {
+          this.activeUsers.push({
+            userId: userLoginId,
+            socketId: socket.id
+          })
+        } else {
+          const getUserLogin = this.activeUsers.find(user => user.userId == userLoginId)
+    
+          if (socket.id != getUserLogin.socketId) {
+            const filterActiveUser = this.activeUsers.filter(user => user.userId != userLoginId)
+            filterActiveUser.push({
+              userId: userLoginId,
+              socketId: socket.id
+            })
+    
+            this.activeUsers = filterActiveUser
+          }
+        }
+    
+        console.log(this.activeUsers)
+    
+        this.io.emit('get-users', this.activeUsers)
+      })
+    
+      // Send Message
+      socket.on('send-message', (data) => {
+        const { receiverId, message, senderId } = data
+        console.log(data)
+        const user = this.activeUsers.find(user => user.userId == receiverId)
+    
+        if (user) {
+          this.io.to(user.socketId).emit(`receive-data`, {
+            text: message,
+            senderId
+          })
+        }
+      })
+    
+      socket.on('disconnect', (userId) => {
+        this.activeUsers = this.activeUsers.filter(activeUser => activeUser.userId != userId)
+      })
+    
+      socket.on('logout', ({ userId }) => {
+        this.activeUsers = this.activeUsers.filter(activeUser => activeUser.userId != userId)
+        this.io.emit('get-users', this.activeUsers)
+      })
+    });
   }
 
   // Initialise Middleware
@@ -44,6 +110,7 @@ class App {
     this.app.use(xss());
     this.app.use(cookieParser());    
   }
+
   #initialiseErrorHandling() {
     this.app.use(errorMiddleware);
     this.app.use((req, res, next) => {
@@ -77,7 +144,7 @@ class App {
 
   // Lister Server
   listen() {
-    this.app.listen(this.port, () => {
+    this.httpServer.listen(this.port, () => {
       console.log(`Server Running with worker id ${process.pid} on port ${this.port}`);
     });
   }
